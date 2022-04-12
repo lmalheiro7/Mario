@@ -57,7 +57,11 @@ function create() {
     let planta = this.add.sprite(1000, H - 70, "plants").setScale(0.50, 1);
     let planta2 = this.add.sprite(1400, H - 70, "plants").setScale(0.50, 1);
     let plants = this.add.sprite(650, H - 70, "plants");
-    let plant2 = this.add.sprite(150, H - 80, "plant2").setScale(0.75, 1);
+    let planta3 = this.add.sprite(1900, H - 70, "plants").setScale(0.75, 1);
+    let planta4 = this.add.sprite(2300, H-70, "plants").setScale(0.75, 1);
+
+
+    let plant2 = this.add.sprite(100, H - 80, "plant2").setScale(0.75, 1);
 
     this.player = this.physics.add.sprite(40, 90, 'hero', 8) //boneco
     this.player.setBounce(0.3)   //Tamanho dos passos
@@ -117,6 +121,9 @@ function create() {
     blocks.create(1250, 650, "block").refreshBody()
 
     blocks.create(1000, 500, "gemBlock").refreshBody()
+
+
+    blocks.create(850, 850, "gemBlock").refreshBody()
 
 
     blocks.create(800, H - 70, "obs").refreshBody()
