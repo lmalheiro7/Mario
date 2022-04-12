@@ -121,7 +121,7 @@ function create() {
     blocks.create(1250, 650, "block").refreshBody()
 
     blocks.create(1000, 500, "gemBlock").refreshBody()
-    blocks.create(1000,800,"block").refreshBody()
+    blocks.create(950,700,"block").refreshBody()
     blocks.create(850, 600, "gemBlock").refreshBody()
 
 
