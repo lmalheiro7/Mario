@@ -68,7 +68,7 @@ function preload() {
     this.load.image("plant2", "assets/plant2.png");
     this.load.image("gemBlock", "assets/gemBlock.png");
     this.load.image("block", "assets/block.png");
-    this.load.image("obs", "assets/obs2.png")
+    this.load.image("obs", "assets/obs.png")
     this.load.spritesheet('hero', 'assets/hero.png', {
         frameWidth: 57, frameHight: 90
     });
@@ -84,21 +84,22 @@ function create() {
     scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
     this.e1 = new Enemy();
     /*
+
     this.e1.createObjetct(this, 1700, H-60, 'enemy', 0);
 
 
-this.e2 = new Enemy();
-this.e2.createObjetct(this, 1750, H-100, 'pou', 0);
-this.anims.create({
-key: 'run',
-frames: this.anims.generateFrameNumbers('pou', {
-    start: 0, end:1
-}),
-repate: -1,
-frameRate: 10
-})
+    this.e2 = new Enemy();
+    this.e2.createObjetct(this, 1750, H-100, 'pou', 0);
+    this.anims.create({
+    key: 'run',
+    frames: this.anims.generateFrameNumbers('pou', {
+        start: 0, end:1
+    }),
+    repate: -1,
+    frameRate: 10
+    })
 
-*/
+    */
 
 
 
@@ -214,11 +215,11 @@ frameRate: 10
     let platforms = this.physics.add.staticGroup();
 
     //Obstaculos onde vao estar inimigos
-    platforms.create(1300, H - 70, "obs").setScale(0.20, 0.13).refreshBody();
-    platforms.create(1700, H - 70, "obs").setScale(0.20, 0.13).refreshBody();
+    platforms.create(1300, H - 70, "obs").setScale(0.20, 0.30).refreshBody();
+    platforms.create(1700, H - 70, "obs").setScale(0.20, 0.30).refreshBody();
 
-    platforms.create(200, 160, "obs").setScale(0.20, 0.13).refreshBody();
-    platforms.create(600, 160, "obs").setScale(0.20, 0.13).refreshBody();
+    platforms.create(200, 160, "obs").setScale(0.20, 0.30).refreshBody();
+    platforms.create(600, 160, "obs").setScale(0.20, 0.30).refreshBody();
 
     platforms.add(ground);//
 
@@ -241,8 +242,6 @@ frameRate: 10
     this.physics.world.setBounds(0, 0, W, H);  //gravidade
     this.cameras.main.startFollow(this.player, true, true);
     this.cameras.main.setZoom(1.5);
-
-
 }
 
 
