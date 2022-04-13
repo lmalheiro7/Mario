@@ -24,6 +24,7 @@ let config = {
 };
 
 let game = new Phaser.Game(config);
+let points=0;
 
 class Enemy{
     direction;
@@ -275,4 +276,5 @@ function update() {
 
 function eatFruit(player, fruit) {
     fruit.disableBody(true, true)
+    points=points+10;   //caso coma a fruta, então vai incrementar 10 pontos ao score
 }
