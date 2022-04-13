@@ -1,6 +1,6 @@
 let player_config = {
     player_speed: 150,
-    player_jumpspeed: -700,
+    player_jumpspeed: -800,
 }
 
 let config = {
@@ -82,7 +82,7 @@ function create() {
     W = game.config.width;
     H = game.config.height;
 
-    scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
+    scoreText = this.add.text(16, 16, 'score: '+ points, { fontSize: '32px', fill: '#000' });
     this.e1 = new Enemy();
     /*
 
@@ -164,7 +164,7 @@ function create() {
     //ANIMACOES...FRUTAS, OBSTACULOS
     let fruits = this.physics.add.group({
         key: "apple",
-        repeat: 20,
+        repeat: 30,
         setScale: { x: 0.05, y: 0.05 },
         setXY: { x: 200, y: 0, stepX: 100 },  //distancia das frutas
     })
@@ -182,9 +182,9 @@ function create() {
     blocks.create(1000, 700, "block").refreshBody()
     blocks.create(1050, 700, "block").refreshBody()
 
-    blocks.create(1200, 550, "block").refreshBody()
-    blocks.create(1250, 550, "block").refreshBody()
-    blocks.create(1300, 550, "block").refreshBody()
+    blocks.create(1200, 400, "block").refreshBody()
+    blocks.create(1250, 400, "block").refreshBody()
+    blocks.create(1300, 400, "block").refreshBody()
 
     blocks.create(1450, 400, "block").refreshBody()
     blocks.create(1500, 400, "block").refreshBody()
@@ -277,4 +277,6 @@ function update() {
 function eatFruit(player, fruit) {
     fruit.disableBody(true, true)
     points=points+10;   //caso coma a fruta, então vai incrementar 10 pontos ao score
+    //scoreText= this.remove.text.refreshBody();
+    scoreText.setText('score: '+ points);
 }
