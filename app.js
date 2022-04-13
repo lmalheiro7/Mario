@@ -81,6 +81,7 @@ function create() {
     W = game.config.width;
     H = game.config.height;
 
+    scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
     this.e1 = new Enemy();
     /*
     this.e1.createObjetct(this, 1700, H-60, 'enemy', 0);
@@ -184,19 +185,14 @@ frameRate: 10
     blocks.create(1250, 550, "block").refreshBody()
     blocks.create(1300, 550, "block").refreshBody()
 
-
     blocks.create(1450, 400, "block").refreshBody()
     blocks.create(1500, 400, "block").refreshBody()
     blocks.create(1550, 400, "block").refreshBody()
-
 
     blocks.create(1000, 400, "block").refreshBody()
     blocks.create(950, 400, "block").refreshBody()
     blocks.create(900, 400, "block").refreshBody()
     blocks.create(950, 250, "gemBlock").refreshBody()
-
-
-
 
     blocks.create(750, 200, "block").refreshBody()
     blocks.create(700, 200, "block").refreshBody()
@@ -213,18 +209,6 @@ frameRate: 10
     blocks.create(150, 200, "block").refreshBody()
     blocks.create(100, 200, "block").refreshBody()
     blocks.create(400,50, "gemBlock").refreshBody()
-
-
-
-
-
-
-
-
-
-
-
-
 
 //add platforms
     let platforms = this.physics.add.staticGroup();
