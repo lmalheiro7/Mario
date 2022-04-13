@@ -45,7 +45,20 @@ class Enemy{
             this.chnageDirection()
         })
     }
+    collideWith(parent, player){
+        parent.physics.add.collider(this.enemyObject, player, ()=>{
+            if(player.y+40 > this.enemyObject.y){
+                player.active = false;
+                player.disableBody(true, true);
+            }else{
+                this.enemyObject.active = false;
+                this.enemyObject.disableBody(true, true)
+            }
+        })
+    }
 }
+
+
 
 function preload() {
     this.load.image("ground", "assets/ground.png");
@@ -59,19 +72,34 @@ function preload() {
     this.load.spritesheet('hero', 'assets/hero.png', {
         frameWidth: 57, frameHight: 90
     });
-    this.load.spritesheet('inimigo', 'assets/inimigo.png', {
+    this.load.spritesheet('enemy', 'assets/enemy.png', {
         frameWidth: 20, frameHight: 20
     });
-
-}
+}//teste
 
 function create() {
     W = game.config.width;
     H = game.config.height;
 
-
     this.e1 = new Enemy();
-    this.e1.createObjetct(this, 1700, H-60, 'inimigo', 0);
+    /*
+    this.e1.createObjetct(this, 1700, H-60, 'enemy', 0);
+
+
+this.e2 = new Enemy();
+this.e2.createObjetct(this, 1750, H-100, 'pou', 0);
+this.anims.create({
+key: 'run',
+frames: this.anims.generateFrameNumbers('pou', {
+    start: 0, end:1
+}),
+repate: -1,
+frameRate: 10
+})
+
+*/
+
+
 
 
     let ground = this.add.tileSprite(0, H - 48, W, 48, 'ground');
@@ -79,10 +107,13 @@ function create() {
     this.physics.add.existing(ground, true);           // ground.body.allowGravity = false; // ground.body.immovable = true;
 
 
+
     let cloud = this.add.sprite(500, 500, "cloud").setScale(0.75, 0.75)  //nuvem
     let nuvem2 = this.add.sprite(1500, 500, "cloud").setScale(0.75, 0.75)  //nuvem
     let nuvem3 = this.add.sprite(1800, 600, "cloud").setScale(0.50, 0.50)
     let nuvem4 = this.add.sprite(200, 650, "cloud").setScale(0.80, 0.80)
+    let nuvem5 = this.add.sprite(100, 300, "cloud").setScale(0.80, 0.80)
+    let nuvem6 = this.add.sprite(1000, 100, "cloud").setScale(0.80, 0.80)
 
     let planta = this.add.sprite(1000, H - 70, "plants").setScale(0.50, 1);
     //let planta2 = this.add.sprite(1400, H - 70, "plants").setScale(0.50, 1);
@@ -109,7 +140,7 @@ function create() {
             start: 0, end: 7
         }),
         frameRate: 10,
-        repate: -1
+        repate: -1 //test commit
     })
 
     //ANIMACAO PARA BONECO CORRER PARA A DIREITA
@@ -128,7 +159,7 @@ function create() {
 
 
 
- //ANIMACOES...FRUTAS, OBSTACULOS
+    //ANIMACOES...FRUTAS, OBSTACULOS
     let fruits = this.physics.add.group({
         key: "apple",
         repeat: 20,
@@ -136,7 +167,7 @@ function create() {
         setXY: { x: 200, y: 0, stepX: 100 },  //distancia das frutas
     })
 
-        //SALTO DAS FRUTAS
+    //SALTO DAS FRUTAS
     fruits.children.iterate((f) => {
         f.setBounce(Phaser.Math.FloatBetween(0.4, 0.7))
     })
@@ -147,34 +178,65 @@ function create() {
     blocks.create(950, 700, "block").refreshBody()
     blocks.create(950, 700, "block").refreshBody()
     blocks.create(1000, 700, "block").refreshBody()
+    blocks.create(1050, 700, "block").refreshBody()
 
-    blocks.create(1250, 650, "block").refreshBody()
-
-   // blocks.create(500, 500, "gemBlock").refreshBody()
-
-
-    blocks.create(800, 700, "gemBlock").refreshBody()
+    blocks.create(1200, 550, "block").refreshBody()
+    blocks.create(1250, 550, "block").refreshBody()
+    blocks.create(1300, 550, "block").refreshBody()
 
 
-    //blocks.create(800, H - 70, "obs").refreshBody()
-   // blocks.create(1050, 490, "block").refreshBody()
-   // blocks.create(1110, 490, "gemBlock").refreshBody();
-   // blocks.create(1167, 490, "block").refreshBody()
-    //blocks.create(1227, 490, "gemBlock").refreshBody();
-    //blocks.create(1284, 490, "block").refreshBody()
-   // blocks.create(1167, 350, "gemBlock").refreshBody();
+    blocks.create(1450, 400, "block").refreshBody()
+    blocks.create(1500, 400, "block").refreshBody()
+    blocks.create(1550, 400, "block").refreshBody()
+
+
+    blocks.create(1000, 400, "block").refreshBody()
+    blocks.create(950, 400, "block").refreshBody()
+    blocks.create(900, 400, "block").refreshBody()
+    blocks.create(950, 250, "gemBlock").refreshBody()
+
+
+
+
+    blocks.create(750, 200, "block").refreshBody()
+    blocks.create(700, 200, "block").refreshBody()
+    blocks.create(650, 200, "block").refreshBody()
+    blocks.create(600, 200, "block").refreshBody()
+    blocks.create(550, 200, "block").refreshBody()
+    blocks.create(500, 200, "block").refreshBody()
+    blocks.create(450, 200, "block").refreshBody()
+    blocks.create(400, 200, "block").refreshBody()
+    blocks.create(350, 200, "block").refreshBody()
+    blocks.create(300, 200, "block").refreshBody()
+    blocks.create(250, 200, "block").refreshBody()
+    blocks.create(200, 200, "block").refreshBody()
+    blocks.create(150, 200, "block").refreshBody()
+    blocks.create(100, 200, "block").refreshBody()
+    blocks.create(400,50, "gemBlock").refreshBody()
+
+
+
+
+
+
+
+
+
+
+
+
 
 //add platforms
     let platforms = this.physics.add.staticGroup();
-     platforms.create(600, 400, 'ground').setScale(3, 0.75).refreshBody()
-     platforms.create(700, 300, 'ground').setScale(3, 0.75).refreshBody();
-     platforms.create(290, 320, 'ground').setScale(3, 0.75).refreshBody()
-
 
     //Obstaculos onde vao estar inimigos
     platforms.create(1300, H - 70, "obs").setScale(0.20, 0.13).refreshBody();
     platforms.create(1700, H - 70, "obs").setScale(0.20, 0.13).refreshBody();
-    platforms.add(ground);
+
+    platforms.create(200, 160, "obs").setScale(0.20, 0.13).refreshBody();
+    platforms.create(600, 160, "obs").setScale(0.20, 0.13).refreshBody();
+
+    platforms.add(ground);//
 
     //add a collision detection
     this.physics.add.collider(platforms, this.player)
@@ -182,8 +244,14 @@ function create() {
     this.physics.add.collider(blocks, fruits);
     this.physics.add.overlap(this.player, fruits, eatFruit, null, this);
     this.physics.add.collider(this.player, blocks);
+    /*
     this.e1.addColider(this, platforms, blocks);
+    this.e1.collideWithPlayer(this, this.player);
+    this.e2.addColider(this, platforms, blocks);
+    this.e2.collideWithPlayer(this, this.player); //
 
+
+     */
 
     this.cameras.main.setBounds(0, 0, W, H);   //gravidade
     this.physics.world.setBounds(0, 0, W, H);  //gravidade
@@ -213,8 +281,13 @@ function update() {
     if (this.cursors.up.isDown && this.player.body.touching.down) {
         this.player.setVelocityY(player_config.player_jumpspeed)
     }
+    /*
+        this.e1.enemyObject.setVelocityX(50*this.e1.direction);
+        this.e1.enemyObject.anims.play('run', true);
+        this.e2.enemyObject.setVelocityX(-50*this.e1.direction);
+        this.e2.enemyObject.anims.play('run', true);
 
-    this.e1.enemyObject.setVelocityX(50*this.e1.direction);
+     */
 }
 
 function eatFruit(player, fruit) {
