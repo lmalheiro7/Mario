@@ -1,6 +1,6 @@
 let player_config = {
     player_speed: 150,
-    player_jumpspeed: -600,
+    player_jumpspeed: -700,
 }
 
 let config = {
