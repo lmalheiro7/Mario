@@ -160,7 +160,6 @@ function create() {
     this.cursors = this.input.keyboard.createCursorKeys();
 
 
-
     //ANIMACOES...FRUTAS, OBSTACULOS
     let fruits = this.physics.add.group({
         key: "apple",
@@ -220,6 +219,7 @@ function create() {
 
     platforms.create(200, 160, "obs").setScale(0.20, 0.30).refreshBody();
     platforms.create(600, 160, "obs").setScale(0.20, 0.30).refreshBody();
+
 
     platforms.add(ground);//
 
