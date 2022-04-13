@@ -25,6 +25,28 @@ let config = {
 
 let game = new Phaser.Game(config);
 
+class Enemy{
+    direction;
+    enemyObject;
+
+    constructor() {
+        this.direction = 1;
+        this.enemyObject = {};
+    }
+    createObjetct(){
+        this.enemyObject = parent.physics.add.sprite(w, h, sprite, fnumber).setScale(1.5,1.5);
+    }
+    chnageDirection(parent, w, h, sprite, fnumber){
+        this.direction *= -1;
+    }
+    addColider(parent, secoundObject, thirdObject){
+        parent.physics.add.collider(this.enemyObject, secoundObject);
+        parent.physics.add.collider(this.enemyObject, thirdObject, ()=>{
+            this.chnageDirection()
+        })
+    }
+}
+
 function preload() {
     this.load.image("ground", "assets/ground.png");
     this.load.image("apple", "assets/apple.png");
@@ -37,12 +59,19 @@ function preload() {
     this.load.spritesheet('hero', 'assets/hero.png', {
         frameWidth: 57, frameHight: 90
     });
+    this.load.spritesheet('inimigo', 'assets/inimigo.png', {
+        frameWidth: 20, frameHight: 20
+    });
+
 }
 
 function create() {
     W = game.config.width;
     H = game.config.height;
 
+
+    this.e1 = new Enemy();
+    this.e1.createObjetct(this, 1700, H-60, 'inimigo', 0);
 
 
     let ground = this.add.tileSprite(0, H - 48, W, 48, 'ground');
@@ -153,6 +182,7 @@ function create() {
     this.physics.add.collider(blocks, fruits);
     this.physics.add.overlap(this.player, fruits, eatFruit, null, this);
     this.physics.add.collider(this.player, blocks);
+    this.e1.addColider(this, platforms, blocks);
 
 
     this.cameras.main.setBounds(0, 0, W, H);   //gravidade
@@ -183,6 +213,8 @@ function update() {
     if (this.cursors.up.isDown && this.player.body.touching.down) {
         this.player.setVelocityY(player_config.player_jumpspeed)
     }
+
+    this.e1.enemyObject.setVelocityX(50*this.e1.direction);
 }
 
 function eatFruit(player, fruit) {
