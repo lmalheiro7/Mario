@@ -25,6 +25,7 @@ let config = {
 
 let game = new Phaser.Game(config);
 let points=0;
+let ColisaoPou;
 
 class Enemy{
     direction;
@@ -70,6 +71,7 @@ function preload() {
     this.load.image("gemBlock", "assets/gemBlock.png");
     this.load.image("block", "assets/block.png");
     this.load.image("obs", "assets/obs.png")
+    this.load.image("ground", "assets/pou.png");
     this.load.spritesheet('hero', 'assets/hero.png', {
         frameWidth: 57, frameHight: 90
     });
@@ -243,6 +245,19 @@ function create() {
     this.physics.world.setBounds(0, 0, W, H);  //gravidade
     this.cameras.main.startFollow(this.player, true, true);
     this.cameras.main.setZoom(1.5);
+
+    /**
+     * Esta colisão não esta a deixar o boneco andar...
+     */
+    /*ColisaoPou=this.physics.add.group();
+    //ColisaoPou.create(200,160,"pou").setScale(0.70,0.70).refreshBody();
+    var ColisoesPou = ColisaoPou.create(x, 16, 'pou');
+    this.physics.add.collider(ColisaoPou, platforms);
+    bomb.setBounce(1);
+    bomb.setCollideWorldBounds(true);
+    bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
+    bomb.allowGravity = false;*/
+
 }
 
 
