@@ -33,6 +33,7 @@ function preload() {
     this.load.image("plant2", "assets/plant2.png");
     this.load.image("gemBlock", "assets/gemBlock.png");
     this.load.image("block", "assets/block.png");
+    this.load.image("obs", "assets/obs2.png")
     this.load.spritesheet('hero', 'assets/hero.png', {
         frameWidth: 57, frameHight: 90
     });
@@ -55,9 +56,9 @@ function create() {
     let nuvem4 = this.add.sprite(200, 650, "cloud").setScale(0.80, 0.80)
 
     let planta = this.add.sprite(1000, H - 70, "plants").setScale(0.50, 1);
-    let planta2 = this.add.sprite(1400, H - 70, "plants").setScale(0.50, 1);
+    //let planta2 = this.add.sprite(1400, H - 70, "plants").setScale(0.50, 1);
     let plants = this.add.sprite(650, H - 70, "plants");
-    let planta3 = this.add.sprite(1900, H - 70, "plants").setScale(0.75, 1);
+    //let planta3 = this.add.sprite(1900, H - 70, "plants").setScale(0.75, 1);
     let planta4 = this.add.sprite(2300, H-70, "plants").setScale(0.75, 1);
 
 
@@ -120,12 +121,13 @@ function create() {
 
     blocks.create(1250, 650, "block").refreshBody()
 
-    blocks.create(1000, 500, "gemBlock").refreshBody()
-    blocks.create(950,700,"block").refreshBody()
-    blocks.create(850, 600, "gemBlock").refreshBody()
+   // blocks.create(500, 500, "gemBlock").refreshBody()
 
 
-    blocks.create(800, H - 70, "obs").refreshBody()
+    blocks.create(800, 700, "gemBlock").refreshBody()
+
+
+    //blocks.create(800, H - 70, "obs").refreshBody()
    // blocks.create(1050, 490, "block").refreshBody()
    // blocks.create(1110, 490, "gemBlock").refreshBody();
    // blocks.create(1167, 490, "block").refreshBody()
@@ -138,6 +140,11 @@ function create() {
      platforms.create(600, 400, 'ground').setScale(3, 0.75).refreshBody()
      platforms.create(700, 300, 'ground').setScale(3, 0.75).refreshBody();
      platforms.create(290, 320, 'ground').setScale(3, 0.75).refreshBody()
+
+
+    //Obstaculos onde vao estar inimigos
+    platforms.create(1300, H - 70, "obs").setScale(0.20, 0.13).refreshBody();
+    platforms.create(1700, H - 70, "obs").setScale(0.20, 0.13).refreshBody();
     platforms.add(ground);
 
     //add a collision detection
