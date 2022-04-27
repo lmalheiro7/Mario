@@ -1,13 +1,13 @@
 let player_config = {
     player_speed: 150,
-    player_jumpspeed: -800,
+    player_jumpspeed: -600,
 }
 
 let config = {
     type: Phaser.AUTO,
     scale: {
-         //mode: Phaser.Scale.FIT,
-        width: 3000,
+        //mode: Phaser.Scale.FIT,
+        width: 1650,
         height: innerHeight - 5,
     },
     backgroundColor: '#049cd8',
@@ -24,9 +24,33 @@ let config = {
 };
 
 let game = new Phaser.Game(config);
-let points=0;
-let ColisaoPou;
 
+
+class Port{
+    objectPorta;
+
+    constructor() {
+        this.objectPorta = {};
+    }
+
+    createPort(parent, w, h, sprite){
+        this.objectPorta = parent.physics.add.sprite(w,h, sprite).setScale(1,1);
+    }
+
+    portWithColliderPlayer(parent, player){
+        parent.physics.add.collider(this.objectPorta, player, ()=>{
+            if(player.y + 40 > this.objectPorta.y){
+                player.active = false;
+                player.disableBody(true, true);
+            }else{
+                this.objectPorta.active = false;
+                this.objectPorta.disableBody(true, true)
+            }
+        })
+    }
+}
+
+//CREATE ENEMY
 class Enemy{
     direction;
     enemyObject;
@@ -35,21 +59,22 @@ class Enemy{
         this.direction = 1;
         this.enemyObject = {};
     }
-    createObjetct(){
-        this.enemyObject = parent.physics.add.sprite(w, h, sprite, fnumber).setScale(1.5,1.5);
+    createObject(parent, w, h, sprite, fnumber){
+        this.enemyObject = parent.physics.add.sprite(w,h, sprite, fnumber).setScale(1.5, 1.5);
     }
-    chnageDirection(parent, w, h, sprite, fnumber){
+    changeDirection(){
         this.direction *= -1;
     }
-    addColider(parent, secoundObject, thirdObject){
-        parent.physics.add.collider(this.enemyObject, secoundObject);
-        parent.physics.add.collider(this.enemyObject, thirdObject, ()=>{
-            this.chnageDirection()
-        })
+
+    addColider(parent, secondObject, thridObject){
+        parent.physics.add.collider(this.enemyObject, secondObject);
+        parent.physics.add.collider(this.enemyObject, thridObject, ()=>{
+            this.changeDirection()
+        });
     }
-    collideWith(parent, player){
+    collideWithPlayer(parent, player){
         parent.physics.add.collider(this.enemyObject, player, ()=>{
-            if(player.y+40 > this.enemyObject.y){
+            if(player.y + 40 > this.enemyObject.y){
                 player.active = false;
                 player.disableBody(true, true);
             }else{
@@ -60,8 +85,6 @@ class Enemy{
     }
 }
 
-
-
 function preload() {
     this.load.image("ground", "assets/ground.png");
     this.load.image("apple", "assets/apple.png");
@@ -70,35 +93,71 @@ function preload() {
     this.load.image("plant2", "assets/plant2.png");
     this.load.image("gemBlock", "assets/gemBlock.png");
     this.load.image("block", "assets/block.png");
-    this.load.image("obs", "assets/obs.png")
-    this.load.image("ground", "assets/pou.png");
+    this.load.image("obs", "assets/obs.png");
     this.load.spritesheet('hero', 'assets/hero.png', {
         frameWidth: 57, frameHight: 90
     });
-    this.load.spritesheet('enemy', 'assets/enemy.png', {
-        frameWidth: 20, frameHight: 20
+    this.load.spritesheet('sprite', 'assets/inimigo.png', {
+        frameWidth: 32, frameHight: 23
     });
-}//teste
+    this.load.spritesheet('porta', 'assets/porta.png', {
+        frameWidth: 32, frameHight: 23
+    });
+}
 
 function create() {
-    W = game.config.width;
+    //W = game.config.width;
+    W=1650;
     H = game.config.height;
 
-    scoreText = this.add.text(16, 16, 'score: '+ points, { fontSize: '32px', fill: '#000' });
-    this.e1 = new Enemy();
+
     /*
-    this.e1.createObjetct(this, 1700, H-60, 'enemy', 0);
-    this.e2 = new Enemy();
-    this.e2.createObjetct(this, 1750, H-100, 'pou', 0);
+    create function
+     */
+
+    this.e1 = new Enemy();
+    this.e1.createObject(this, 300, 165, 'sprite', 0);
     this.anims.create({
-    key: 'run',
-    frames: this.anims.generateFrameNumbers('pou', {
-        start: 0, end:1
-    }),
-    repate: -1,
-    frameRate: 10
+        key: 'run',
+        frames: this.anims.generateFrameNumbers('sprite', {
+            start:0, end:1
+        }),
+        repate: -1,
+        frameRate: 10
     })
-    */
+
+    this.e2 = new Enemy();
+    this.e2.createObject(this, 1200, 200, 'sprite', 0);
+    this.anims.create({
+        key: 'run',
+        frames: this.anims.generateFrameNumbers('sprite', {
+            start:0, end:1
+        }),
+        repate: -1,
+        frameRate: 10
+    })
+
+    this.e3 = new Enemy();
+    this.e3.createObject(this, 1450, 200, 'sprite', 0);
+    this.anims.create({
+        key: 'run',
+        frames: this.anims.generateFrameNumbers('sprite', {
+            start:0, end:1
+        }),
+        repate: -1,
+        frameRate: 10
+    })
+
+    this.p1 = new Port();
+    this.p1.createPort(this, 1500, 0, 'porta');
+    this.anims.create({
+        key: 'run',
+        frames: this.anims.generateFrameNumbers('sprite', {
+            start:0, end:1
+        }),
+        repate: -1,
+        frameRate: 10
+    })
 
 
 
@@ -107,44 +166,36 @@ function create() {
     ground.setOrigin(0, 0);
     this.physics.add.existing(ground, true);           // ground.body.allowGravity = false; // ground.body.immovable = true;
 
-
-
-    let cloud = this.add.sprite(500, 500, "cloud").setScale(0.75, 0.75)  //nuvem
-    let nuvem2 = this.add.sprite(1500, 500, "cloud").setScale(0.75, 0.75)  //nuvem
-    let nuvem3 = this.add.sprite(1800, 600, "cloud").setScale(0.50, 0.50)
-    let nuvem4 = this.add.sprite(200, 650, "cloud").setScale(0.80, 0.80)
-    let nuvem5 = this.add.sprite(100, 300, "cloud").setScale(0.80, 0.80)
-    let nuvem6 = this.add.sprite(1000, 100, "cloud").setScale(0.80, 0.80)
-
-    let planta = this.add.sprite(1000, H - 70, "plants").setScale(0.50, 1);
-    //let planta2 = this.add.sprite(1400, H - 70, "plants").setScale(0.50, 1);
+    let cloud = this.add.sprite(500, 280, "cloud").setScale(0.75, 0.75)
+    let cloud2 = this.add.sprite(850, 100, 'cloud').setScale(0.75,0.75)
     let plants = this.add.sprite(650, H - 70, "plants");
-    //let planta3 = this.add.sprite(1900, H - 70, "plants").setScale(0.75, 1);
-    let planta4 = this.add.sprite(2300, H-70, "plants").setScale(0.75, 1);
-
-
-    let plant2 = this.add.sprite(100, H - 80, "plant2").setScale(0.75, 1);
-
-    this.player = this.physics.add.sprite(40, 90, 'hero', 8) //boneco
-    this.player.setBounce(0.3)   //Tamanho dos passos
+    let plant2 = this.add.sprite(150, H - 80, "plant2").setScale(0.75, 1);
+    this.player = this.physics.add.sprite(40, 90, 'hero', 8)
+    this.player.setBounce(0.3)
     this.player.setCollideWorldBounds(true);
+
+
 
     //Player animation and Player movement
 
-    //Animações para o boneco andar
-
-
-    //ANIMAÇÃO PARA BONECO CORRER PARA A ESQUERDA
+    //animation
     this.anims.create({
         key: 'left',
         frames: this.anims.generateFrameNumbers('hero', {
             start: 0, end: 7
         }),
         frameRate: 10,
-        repate: -1 //test commit
+        repate: -1
     })
 
-    //ANIMACAO PARA BONECO CORRER PARA A DIREITA
+    this.anims.create({
+        key: 'center',
+        frames: this.anims.generateFrameNumbers('hero', {
+            start: 8, end: 8
+        }),
+        frameRate: 10
+    })
+
     this.anims.create({
         key: 'rigth',
         frames: this.anims.generateFrameNumbers('hero', {
@@ -153,74 +204,70 @@ function create() {
         frameRate: 10,
         repate: -1
     })
-
     //Keyboard
-
     this.cursors = this.input.keyboard.createCursorKeys();
 
 
-    //ANIMACOES...FRUTAS, OBSTACULOS
     let fruits = this.physics.add.group({
         key: "apple",
-        repeat: 30,
+        repeat: 8,
         setScale: { x: 0.05, y: 0.05 },
-        setXY: { x: 200, y: 0, stepX: 100 },  //distancia das frutas
+        setXY: { x: 200, y: 0, stepX: 100 },
+
     })
 
-    //SALTO DAS FRUTAS
     fruits.children.iterate((f) => {
         f.setBounce(Phaser.Math.FloatBetween(0.4, 0.7))
     })
 
-    //add blocks
+
     let blocks = this.physics.add.staticGroup();
-    //           LARGURA    ALTURA
-    blocks.create(950, 700, "block").refreshBody()
-    blocks.create(950, 700, "block").refreshBody()
-    blocks.create(1000, 700, "block").refreshBody()
-    blocks.create(1050, 700, "block").refreshBody()
 
-    blocks.create(1200, 400, "block").refreshBody()
-    blocks.create(1250, 400, "block").refreshBody()
-    blocks.create(1300, 400, "block").refreshBody()
+    blocks.create(350, 50, "gemBlock").refreshBody();
+    blocks.create(170, 165, "obs").setScale(0.20, 0.30).refreshBody();
+    blocks.create(600, 165, "obs").setScale(0.20, 0.30).refreshBody();
 
-    blocks.create(1450, 400, "block").refreshBody()
-    blocks.create(1500, 400, "block").refreshBody()
-    blocks.create(1550, 400, "block").refreshBody()
+    blocks.create(1150, 220, "obs").setScale(0.20, 0.30).refreshBody();
+    blocks.create(1500, 220, "obs").setScale(0.20, 0.30).refreshBody();
 
-    blocks.create(1000, 400, "block").refreshBody()
-    blocks.create(950, 400, "block").refreshBody()
-    blocks.create(900, 400, "block").refreshBody()
-    blocks.create(950, 250, "gemBlock").refreshBody()
 
-    blocks.create(750, 200, "block").refreshBody()
-    blocks.create(700, 200, "block").refreshBody()
-    blocks.create(650, 200, "block").refreshBody()
-    blocks.create(600, 200, "block").refreshBody()
-    blocks.create(550, 200, "block").refreshBody()
-    blocks.create(500, 200, "block").refreshBody()
-    blocks.create(450, 200, "block").refreshBody()
-    blocks.create(400, 200, "block").refreshBody()
-    blocks.create(350, 200, "block").refreshBody()
-    blocks.create(300, 200, "block").refreshBody()
-    blocks.create(250, 200, "block").refreshBody()
-    blocks.create(200, 200, "block").refreshBody()
-    blocks.create(150, 200, "block").refreshBody()
-    blocks.create(100, 200, "block").refreshBody()
-    blocks.create(400,50, "gemBlock").refreshBody()
-
-//add platforms
     let platforms = this.physics.add.staticGroup();
 
-    //Obstaculos onde vao estar inimigos
-    platforms.create(1300, H - 70, "obs").setScale(0.20, 0.30).refreshBody();
-    platforms.create(1700, H - 70, "obs").setScale(0.20, 0.30).refreshBody();
+    platforms.create(550, 500, 'block').setScale(1, 0.75).refreshBody();
+    platforms.create(600, 500, 'block').setScale(1.20, 0.75).refreshBody();
+    platforms.create(650, 500, 'block').setScale(1, 0.75).refreshBody();
 
-    platforms.create(200, 160, "obs").setScale(0.20, 0.30).refreshBody();
-    platforms.create(600, 160, "obs").setScale(0.20, 0.30).refreshBody();
+    platforms.create(800, 350, 'block').setScale(1, 0.75).refreshBody();
+    platforms.create(850, 350, 'block').setScale(1.20, 0.75).refreshBody();
+
+    platforms.create(100, 200, 'block').setScale(1, 0.75).refreshBody();
+    platforms.create(150, 200, 'block').setScale(1, 0.75).refreshBody();
+    platforms.create(200, 200, 'block').setScale(1, 0.75).refreshBody();
+    platforms.create(250, 200, 'block').setScale(1.20, 0.75).refreshBody();
+    platforms.create(300, 200, 'block').setScale(1, 0.75).refreshBody();
+    platforms.create(350, 200, 'block').setScale(1, 0.75).refreshBody();
+    platforms.create(400, 200, 'block').setScale(1, 0.75).refreshBody();
+    platforms.create(450, 200, 'block').setScale(1.20, 0.75).refreshBody();
+    platforms.create(500, 200, 'block').setScale(1, 0.75).refreshBody();
+    platforms.create(550, 200, 'block').setScale(1, 0.75).refreshBody();
+    platforms.create(600, 200, 'block').setScale(1.20, 0.75).refreshBody();
+    platforms.create(650, 200, 'block').setScale(1, 0.75).refreshBody();
 
 
-    platforms.add(ground);//
+    platforms.create(1100, 250, 'block').setScale(1, 0.75).refreshBody();
+    platforms.create(1150, 250, 'block').setScale(1, 0.75).refreshBody();
+    platforms.create(1200, 250, 'block').setScale(1, 0.75).refreshBody();
+    platforms.create(1250, 250, 'block').setScale(1, 0.75).refreshBody();
+    platforms.create(1300, 250, 'block').setScale(1, 0.75).refreshBody();
+    platforms.create(1350, 250, 'block').setScale(1, 0.75).refreshBody();
+    platforms.create(1400, 250, 'block').setScale(1, 0.75).refreshBody();
+    platforms.create(1450, 250, 'block').setScale(1, 0.75).refreshBody();
+    platforms.create(1500, 250, 'block').setScale(1, 0.75).refreshBody();
+    platforms.create(1550, 250, 'block').setScale(1, 0.75).refreshBody();
+
+   // platforms.create(1550, H-60, 'porta').setScale(1,1).refreshBody();
+
+    platforms.add(ground);
 
     //add a collision detection
     this.physics.add.collider(platforms, this.player)
@@ -228,34 +275,31 @@ function create() {
     this.physics.add.collider(blocks, fruits);
     this.physics.add.overlap(this.player, fruits, eatFruit, null, this);
     this.physics.add.collider(this.player, blocks);
-    /*
+
+    //add enemy obstacle
     this.e1.addColider(this, platforms, blocks);
     this.e1.collideWithPlayer(this, this.player);
-    this.e2.addColider(this, platforms, blocks);
-    this.e2.collideWithPlayer(this, this.player); //
-     */
 
-    this.cameras.main.setBounds(0, 0, W, H);   //gravidade
-    this.physics.world.setBounds(0, 0, W, H);  //gravidade
+    this.e2.addColider(this, platforms, blocks);
+    this.e2.collideWithPlayer(this, this.player);
+
+    this.e3.addColider(this, platforms, blocks);
+    this.e3.collideWithPlayer(this, this.player);
+
+    this.p1.portWithColliderPlayer(this, this.player);
+
+
+    this.cameras.main.setBounds(0, 0, W, H);
+    this.physics.world.setBounds(0, 0, W, H);
+
     this.cameras.main.startFollow(this.player, true, true);
     this.cameras.main.setZoom(1.5);
 
-    /**
-     * Esta colisão não esta a deixar o boneco andar...
-     */
-    /*ColisaoPou=this.physics.add.group();
-    //ColisaoPou.create(200,160,"pou").setScale(0.70,0.70).refreshBody();
-    var ColisoesPou = ColisaoPou.create(x, 16, 'pou');
-    this.physics.add.collider(ColisaoPou, platforms);
-    bomb.setBounce(1);
-    bomb.setCollideWorldBounds(true);
-    bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
-    bomb.allowGravity = false;*/
 
 }
 
-
 function update() {
+
 
     if (this.cursors.left.isDown) {
         this.player.setVelocityX(-player_config.player_speed);
@@ -274,17 +318,20 @@ function update() {
     if (this.cursors.up.isDown && this.player.body.touching.down) {
         this.player.setVelocityY(player_config.player_jumpspeed)
     }
-    /*
-        this.e1.enemyObject.setVelocityX(50*this.e1.direction);
-        this.e1.enemyObject.anims.play('run', true);
-        this.e2.enemyObject.setVelocityX(-50*this.e1.direction);
-        this.e2.enemyObject.anims.play('run', true);
-     */
+    //add enemy obstacle
+    this.e1.enemyObject.setVelocityX(50*this.e1.direction);
+    this.e1.enemyObject.anims.play('run', true);
+
+    this.e2.enemyObject.setVelocityX(50*this.e2.direction);
+    this.e2.enemyObject.anims.play('run', true);
+
+    this.e3.enemyObject.setVelocityX(50*this.e3.direction);
+    this.e3.enemyObject.anims.play('run', true);
+
+
+
 }
 
 function eatFruit(player, fruit) {
     fruit.disableBody(true, true)
-    points=points+10;   //caso coma a fruta, então vai incrementar 10 pontos ao score
-    //scoreText= this.remove.text.refreshBody();
-    scoreText.setText('score: '+ points);
 }

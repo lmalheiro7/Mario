@@ -6,8 +6,8 @@ let player_config = {
 let config = {
     type: Phaser.AUTO,
     scale: {
-        // mode: Phaser.Scale.FIT,
-        width: 1370,
+        //mode: Phaser.Scale.FIT,
+        width: 2000,
         height: innerHeight - 5,
     },
     backgroundColor: '#049cd8',
@@ -25,6 +25,43 @@ let config = {
 
 let game = new Phaser.Game(config);
 
+
+
+//CREATE ENEMY
+class Enemy{
+    direction;
+    enemyObject;
+
+    constructor() {
+        this.direction = 1;
+        this.enemyObject = {};
+    }
+    createObject(parent, w, h, sprite, fnumber){
+        this.enemyObject = parent.physics.add.sprite(w,h, sprite, fnumber).setScale(1.5, 1.5);
+    }
+    changeDirection(){
+        this.direction *= -1;
+    }
+
+    addColider(parent, secondObject, thridObject){
+        parent.physics.add.collider(this.enemyObject, secondObject);
+        parent.physics.add.collider(this.enemyObject, thridObject, ()=>{
+            this.changeDirection()
+        });
+    }
+    collideWithPlayer(parent, player){
+        parent.physics.add.collider(this.enemyObject, player, ()=>{
+            if(player.y + 40 > this.enemyObject.y){
+                player.active = false;
+                player.disableBody(true, true);
+            }else{
+                this.enemyObject.active = false;
+                this.enemyObject.disableBody(true, true)
+            }
+        })
+    }
+}
+
 function preload() {
     this.load.image("ground", "assets/ground.png");
     this.load.image("apple", "assets/apple.png");
@@ -33,29 +70,52 @@ function preload() {
     this.load.image("plant2", "assets/plant2.png");
     this.load.image("gemBlock", "assets/gemBlock.png");
     this.load.image("block", "assets/block.png");
+    this.load.image("obs", "assets/obs.png");
     this.load.spritesheet('hero', 'assets/hero.png', {
         frameWidth: 57, frameHight: 90
+    });
+    this.load.spritesheet('sprite', 'assets/inimigo.png', {
+        frameWidth: 32, frameHight: 23
     });
 }
 
 function create() {
-    W = game.config.width;
+    //W = game.config.width;
+    W=2000;
     H = game.config.height;
 
 
+    /*
+    create function
+     */
+
+    this.e1 = new Enemy();
+    this.e1.createObject(this, 300, 165, 'sprite', 0);
+    this.anims.create({
+        key: 'run',
+        frames: this.anims.generateFrameNumbers('sprite', {
+            start:0, end:1
+        }),
+        repate: -1,
+        frameRate: 10
+    })
+    /*
+    end function
+     */
 
     let ground = this.add.tileSprite(0, H - 48, W, 48, 'ground');
     ground.setOrigin(0, 0);
     this.physics.add.existing(ground, true);           // ground.body.allowGravity = false; // ground.body.immovable = true;
 
-
     let cloud = this.add.sprite(500, 280, "cloud").setScale(0.75, 0.75)
+    let cloud2 = this.add.sprite(850, 100, 'cloud').setScale(0.75,0.75)
     let plants = this.add.sprite(650, H - 70, "plants");
     let plant2 = this.add.sprite(150, H - 80, "plant2").setScale(0.75, 1);
-
     this.player = this.physics.add.sprite(40, 90, 'hero', 8)
     this.player.setBounce(0.3)
     this.player.setCollideWorldBounds(true);
+
+
 
     //Player animation and Player movement
 
@@ -89,13 +149,6 @@ function create() {
     this.cursors = this.input.keyboard.createCursorKeys();
 
 
-
-
-
-
-
-
-
     let fruits = this.physics.add.group({
         key: "apple",
         repeat: 8,
@@ -110,19 +163,50 @@ function create() {
 
 
     let blocks = this.physics.add.staticGroup();
-    blocks.create(900, 490, "gemBlock").refreshBody();
-    blocks.create(1050, 490, "block").refreshBody()
-    blocks.create(1110, 490, "gemBlock").refreshBody();
-    blocks.create(1167, 490, "block").refreshBody()
-    blocks.create(1227, 490, "gemBlock").refreshBody();
-    blocks.create(1284, 490, "block").refreshBody()
-    blocks.create(1167, 350, "gemBlock").refreshBody();
+
+    blocks.create(350, 50, "gemBlock").refreshBody();
+    blocks.create(170, 165, "obs").setScale(0.20, 0.30).refreshBody();
+    blocks.create(600, 165, "obs").setScale(0.20, 0.30).refreshBody();
 
 
     let platforms = this.physics.add.staticGroup();
-    // platforms.create(600, 400, 'ground').setScale(3, 0.75).refreshBody()
-    // platforms.create(700, 300, 'ground').setScale(3, 0.75).refreshBody();
-    // platforms.create(290, 320, 'ground').setScale(3, 0.75).refreshBody()
+
+    platforms.create(550, 500, 'block').setScale(1, 0.75).refreshBody();
+    platforms.create(600, 500, 'block').setScale(1.20, 0.75).refreshBody();
+    platforms.create(650, 500, 'block').setScale(1, 0.75).refreshBody();
+
+    platforms.create(800, 350, 'block').setScale(1, 0.75).refreshBody();
+    platforms.create(850, 350, 'block').setScale(1.20, 0.75).refreshBody();
+
+    platforms.create(100, 200, 'block').setScale(1, 0.75).refreshBody();
+    platforms.create(150, 200, 'block').setScale(1, 0.75).refreshBody();
+    platforms.create(200, 200, 'block').setScale(1, 0.75).refreshBody();
+    platforms.create(250, 200, 'block').setScale(1.20, 0.75).refreshBody();
+    platforms.create(300, 200, 'block').setScale(1, 0.75).refreshBody();
+    platforms.create(350, 200, 'block').setScale(1, 0.75).refreshBody();
+    platforms.create(400, 200, 'block').setScale(1, 0.75).refreshBody();
+    platforms.create(450, 200, 'block').setScale(1.20, 0.75).refreshBody();
+    platforms.create(500, 200, 'block').setScale(1, 0.75).refreshBody();
+    platforms.create(550, 200, 'block').setScale(1, 0.75).refreshBody();
+    platforms.create(600, 200, 'block').setScale(1.20, 0.75).refreshBody();
+    platforms.create(650, 200, 'block').setScale(1, 0.75).refreshBody();
+
+
+    platforms.create(1100, 250, 'block').setScale(1, 0.75).refreshBody();
+    platforms.create(1150, 250, 'block').setScale(1.20, 0.75).refreshBody();
+    platforms.create(1200, 250, 'block').setScale(1, 0.75).refreshBody();
+
+    platforms.create(1500, 400, 'block').setScale(1.20, 0.75).refreshBody();
+    platforms.create(1550, 400, 'block').setScale(1.20, 0.75).refreshBody();
+    platforms.create(1600, 400, 'block').setScale(1.20, 0.75).refreshBody();
+    platforms.create(1650, 400, 'block').setScale(1, 0.75).refreshBody();
+
+
+
+
+
+
+
     platforms.add(ground);
 
     //add a collision detection
@@ -132,6 +216,9 @@ function create() {
     this.physics.add.overlap(this.player, fruits, eatFruit, null, this);
     this.physics.add.collider(this.player, blocks);
 
+    //add enemy obstacle
+    this.e1.addColider(this, platforms, blocks);
+    this.e1.collideWithPlayer(this, this.player);
 
 
 
@@ -146,6 +233,7 @@ function create() {
 }
 
 function update() {
+
 
     if (this.cursors.left.isDown) {
         this.player.setVelocityX(-player_config.player_speed);
@@ -164,6 +252,12 @@ function update() {
     if (this.cursors.up.isDown && this.player.body.touching.down) {
         this.player.setVelocityY(player_config.player_jumpspeed)
     }
+    //add enemy obstacle
+    this.e1.enemyObject.setVelocityX(50*this.e1.direction);
+    this.e1.enemyObject.anims.play('run', true);
+
+
+
 }
 
 function eatFruit(player, fruit) {
