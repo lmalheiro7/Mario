@@ -87,10 +87,7 @@ function create() {
     scoreText = this.add.text(16, 16, 'score: '+ points, { fontSize: '32px', fill: '#000' });
     this.e1 = new Enemy();
     /*
-
     this.e1.createObjetct(this, 1700, H-60, 'enemy', 0);
-
-
     this.e2 = new Enemy();
     this.e2.createObjetct(this, 1750, H-100, 'pou', 0);
     this.anims.create({
@@ -101,7 +98,6 @@ function create() {
     repate: -1,
     frameRate: 10
     })
-
     */
 
 
@@ -237,8 +233,6 @@ function create() {
     this.e1.collideWithPlayer(this, this.player);
     this.e2.addColider(this, platforms, blocks);
     this.e2.collideWithPlayer(this, this.player); //
-
-
      */
 
     this.cameras.main.setBounds(0, 0, W, H);   //gravidade
@@ -285,7 +279,6 @@ function update() {
         this.e1.enemyObject.anims.play('run', true);
         this.e2.enemyObject.setVelocityX(-50*this.e1.direction);
         this.e2.enemyObject.anims.play('run', true);
-
      */
 }
 
