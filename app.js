@@ -6,7 +6,7 @@ let player_config = {
 let config = {
     type: Phaser.AUTO,
     scale: {
-        // mode: Phaser.Scale.FIT,
+         //mode: Phaser.Scale.FIT,
         width: 3000,
         height: innerHeight - 5,
     },
