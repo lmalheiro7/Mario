@@ -24,31 +24,10 @@ let config = {
 };
 
 let game = new Phaser.Game(config);
+let points=0;
 
 
-class Port{
-    objectPorta;
 
-    constructor() {
-        this.objectPorta = {};
-    }
-
-    createPort(parent, w, h, sprite){
-        this.objectPorta = parent.physics.add.sprite(w,h, sprite).setScale(1,1);
-    }
-
-    portWithColliderPlayer(parent, player){
-        parent.physics.add.collider(this.objectPorta, player, ()=>{
-            if(player.y + 40 > this.objectPorta.y){
-                player.active = false;
-                player.disableBody(true, true);
-            }else{
-                this.objectPorta.active = false;
-                this.objectPorta.disableBody(true, true)
-            }
-        })
-    }
-}
 
 //CREATE ENEMY
 class Enemy{
@@ -100,7 +79,7 @@ function preload() {
     this.load.spritesheet('sprite', 'assets/inimigo.png', {
         frameWidth: 32, frameHight: 23
     });
-    this.load.spritesheet('porta', 'assets/porta.png', {
+    this.load.spritesheet('port', 'assets/porta.png', {
         frameWidth: 32, frameHight: 23
     });
 }
@@ -110,6 +89,7 @@ function create() {
     W=1650;
     H = game.config.height;
 
+    scoreText = this.add.text(1400, 450, 'score: '+ points, { fontSize: '32px', fill: '#000' });
 
     /*
     create function
@@ -147,20 +127,6 @@ function create() {
         repate: -1,
         frameRate: 10
     })
-
-    this.p1 = new Port();
-    this.p1.createPort(this, 1500, 0, 'porta');
-    this.anims.create({
-        key: 'run',
-        frames: this.anims.generateFrameNumbers('sprite', {
-            start:0, end:1
-        }),
-        repate: -1,
-        frameRate: 10
-    })
-
-
-
 
     let ground = this.add.tileSprite(0, H - 48, W, 48, 'ground');
     ground.setOrigin(0, 0);
@@ -280,13 +246,13 @@ function create() {
     this.e1.addColider(this, platforms, blocks);
     this.e1.collideWithPlayer(this, this.player);
 
+
     this.e2.addColider(this, platforms, blocks);
     this.e2.collideWithPlayer(this, this.player);
 
     this.e3.addColider(this, platforms, blocks);
     this.e3.collideWithPlayer(this, this.player);
 
-    this.p1.portWithColliderPlayer(this, this.player);
 
 
     this.cameras.main.setBounds(0, 0, W, H);
@@ -334,4 +300,6 @@ function update() {
 
 function eatFruit(player, fruit) {
     fruit.disableBody(true, true)
+    points=points+10;
+    scoreText.setText('score: '+ points);
 }
