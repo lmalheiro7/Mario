@@ -28,7 +28,30 @@ let points=0;
 
 
 
+class PortaFim{
+    porta;
 
+    constructor() {
+        this.porta = {};
+    }
+
+    criarPorta(parent, largura, comprimento, sprite, fnumber){
+        this.porta = parent.physics.add.sprite(largura, comprimento, sprite, fnumber).setScale(1.5,1.5);
+    }
+
+    collidePortWidhPlayer(parent, player, points){
+        parent.physics.add.collider(this.porta, player, ()=>{
+            if (player.y + 40 > this.porta.y && points >= 90){
+                player.active = false;
+                player.disableBody(true, true);
+            }else{
+                this.porta.active(true);
+                this.porta.disableBody(false, false);
+            }
+        })
+    }
+
+}
 //CREATE ENEMY
 class Enemy{
     direction;
@@ -79,8 +102,8 @@ function preload() {
     this.load.spritesheet('sprite', 'assets/inimigo.png', {
         frameWidth: 32, frameHight: 23
     });
-    this.load.spritesheet('port', 'assets/porta.png', {
-        frameWidth: 32, frameHight: 23
+    this.load.spritesheet('port', 'assets/port.png', {
+        frameWidth: 70, frameHight: 140
     });
 }
 
@@ -127,6 +150,10 @@ function create() {
         repate: -1,
         frameRate: 10
     })
+
+    //this.p1 = new PortaFim();
+    //this.p1.criarPorta(this, 100, 100, 'port', 0);
+
 
     let ground = this.add.tileSprite(0, H - 48, W, 48, 'ground');
     ground.setOrigin(0, 0);
@@ -230,6 +257,7 @@ function create() {
     platforms.create(1450, 250, 'block').setScale(1, 0.75).refreshBody();
     platforms.create(1500, 250, 'block').setScale(1, 0.75).refreshBody();
     platforms.create(1550, 250, 'block').setScale(1, 0.75).refreshBody();
+
 
    // platforms.create(1550, H-60, 'porta').setScale(1,1).refreshBody();
 
