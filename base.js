@@ -7,7 +7,7 @@ let config = {
     type: Phaser.AUTO,
     scale: {
         //mode: Phaser.Scale.FIT,
-        width: 2000,
+        width: 1650,
         height: innerHeight - 5,
     },
     backgroundColor: '#049cd8',
@@ -26,6 +26,29 @@ let config = {
 let game = new Phaser.Game(config);
 
 
+class Port{
+    objectPorta;
+
+    constructor() {
+        this.objectPorta = {};
+    }
+
+    createPort(parent, w, h, sprite){
+        this.objectPorta = parent.physics.add.sprite(w,h, sprite).setScale(1,1);
+    }
+
+    portWithColliderPlayer(parent, player){
+        parent.physics.add.collider(this.objectPorta, player, ()=>{
+            if(player.y + 40 > this.objectPorta.y){
+                player.active = false;
+                player.disableBody(true, true);
+            }else{
+                this.objectPorta.active = false;
+                this.objectPorta.disableBody(true, true)
+            }
+        })
+    }
+}
 
 //CREATE ENEMY
 class Enemy{
@@ -77,11 +100,14 @@ function preload() {
     this.load.spritesheet('sprite', 'assets/inimigo.png', {
         frameWidth: 32, frameHight: 23
     });
+    this.load.spritesheet('porta', 'assets/porta.png', {
+        frameWidth: 32, frameHight: 23
+    });
 }
 
 function create() {
     //W = game.config.width;
-    W=2000;
+    W=1650;
     H = game.config.height;
 
 
@@ -99,9 +125,42 @@ function create() {
         repate: -1,
         frameRate: 10
     })
-    /*
-    end function
-     */
+
+    this.e2 = new Enemy();
+    this.e2.createObject(this, 1200, 200, 'sprite', 0);
+    this.anims.create({
+        key: 'run',
+        frames: this.anims.generateFrameNumbers('sprite', {
+            start:0, end:1
+        }),
+        repate: -1,
+        frameRate: 10
+    })
+
+    this.e3 = new Enemy();
+    this.e3.createObject(this, 1450, 200, 'sprite', 0);
+    this.anims.create({
+        key: 'run',
+        frames: this.anims.generateFrameNumbers('sprite', {
+            start:0, end:1
+        }),
+        repate: -1,
+        frameRate: 10
+    })
+
+    this.p1 = new Port();
+    this.p1.createPort(this, 1500, 0, 'porta');
+    this.anims.create({
+        key: 'run',
+        frames: this.anims.generateFrameNumbers('sprite', {
+            start:0, end:1
+        }),
+        repate: -1,
+        frameRate: 10
+    })
+
+
+
 
     let ground = this.add.tileSprite(0, H - 48, W, 48, 'ground');
     ground.setOrigin(0, 0);
@@ -168,6 +227,9 @@ function create() {
     blocks.create(170, 165, "obs").setScale(0.20, 0.30).refreshBody();
     blocks.create(600, 165, "obs").setScale(0.20, 0.30).refreshBody();
 
+    blocks.create(1150, 220, "obs").setScale(0.20, 0.30).refreshBody();
+    blocks.create(1500, 220, "obs").setScale(0.20, 0.30).refreshBody();
+
 
     let platforms = this.physics.add.staticGroup();
 
@@ -193,19 +255,17 @@ function create() {
 
 
     platforms.create(1100, 250, 'block').setScale(1, 0.75).refreshBody();
-    platforms.create(1150, 250, 'block').setScale(1.20, 0.75).refreshBody();
+    platforms.create(1150, 250, 'block').setScale(1, 0.75).refreshBody();
     platforms.create(1200, 250, 'block').setScale(1, 0.75).refreshBody();
+    platforms.create(1250, 250, 'block').setScale(1, 0.75).refreshBody();
+    platforms.create(1300, 250, 'block').setScale(1, 0.75).refreshBody();
+    platforms.create(1350, 250, 'block').setScale(1, 0.75).refreshBody();
+    platforms.create(1400, 250, 'block').setScale(1, 0.75).refreshBody();
+    platforms.create(1450, 250, 'block').setScale(1, 0.75).refreshBody();
+    platforms.create(1500, 250, 'block').setScale(1, 0.75).refreshBody();
+    platforms.create(1550, 250, 'block').setScale(1, 0.75).refreshBody();
 
-    platforms.create(1500, 400, 'block').setScale(1.20, 0.75).refreshBody();
-    platforms.create(1550, 400, 'block').setScale(1.20, 0.75).refreshBody();
-    platforms.create(1600, 400, 'block').setScale(1.20, 0.75).refreshBody();
-    platforms.create(1650, 400, 'block').setScale(1, 0.75).refreshBody();
-
-
-
-
-
-
+    // platforms.create(1550, H-60, 'porta').setScale(1,1).refreshBody();
 
     platforms.add(ground);
 
@@ -220,7 +280,13 @@ function create() {
     this.e1.addColider(this, platforms, blocks);
     this.e1.collideWithPlayer(this, this.player);
 
+    this.e2.addColider(this, platforms, blocks);
+    this.e2.collideWithPlayer(this, this.player);
 
+    this.e3.addColider(this, platforms, blocks);
+    this.e3.collideWithPlayer(this, this.player);
+
+    this.p1.portWithColliderPlayer(this, this.player);
 
 
     this.cameras.main.setBounds(0, 0, W, H);
@@ -255,6 +321,12 @@ function update() {
     //add enemy obstacle
     this.e1.enemyObject.setVelocityX(50*this.e1.direction);
     this.e1.enemyObject.anims.play('run', true);
+
+    this.e2.enemyObject.setVelocityX(50*this.e2.direction);
+    this.e2.enemyObject.anims.play('run', true);
+
+    this.e3.enemyObject.setVelocityX(50*this.e3.direction);
+    this.e3.enemyObject.anims.play('run', true);
 
 
 
