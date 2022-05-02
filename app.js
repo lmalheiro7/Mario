@@ -27,7 +27,6 @@ let game = new Phaser.Game(config);
 let points=0;
 
 
-
 class PortaFim{
     porta;
 
@@ -36,7 +35,7 @@ class PortaFim{
     }
 
     criarPorta(parent, largura, comprimento, sprite, fnumber){
-        this.porta = parent.physics.add.sprite(largura, comprimento, sprite, fnumber).setScale(1.5,1.5);
+        this.porta = parent.physics.add.sprite(largura, comprimento, sprite, fnumber).setScale(1,1);
     }
 
     collidePortWidhPlayer(parent, player, points){
@@ -151,8 +150,20 @@ function create() {
         frameRate: 10
     })
 
-    //this.p1 = new PortaFim();
-    //this.p1.criarPorta(this, 100, 100, 'port', 0);
+    //
+    //test
+    //
+
+    this.p1 = new PortaFim();
+    this.p1.criarPorta(this, 250, 100, 'port', 0);
+    this.anims.create({
+        key: 'run',
+        frames: this.anims.generateFrameNumbers('port', {
+            start:0, end:1
+        }),
+        repate: -1,
+        frameRate: 10
+    })
 
 
     let ground = this.add.tileSprite(0, H - 48, W, 48, 'ground');
@@ -225,6 +236,14 @@ function create() {
 
 
     let platforms = this.physics.add.staticGroup();
+
+
+    //TESTE PORTA
+    platforms.create(200, 600, 'block').setScale(1, 0.75).refreshBody();
+    platforms.create(250, 600, 'block').setScale(1, 0.75).refreshBody();
+    platforms.create(300, 600, 'block').setScale(1, 0.75).refreshBody();
+    platforms.create(350, 600, 'block').setScale(1, 0.75).refreshBody();
+    //
 
     platforms.create(550, 500, 'block').setScale(1, 0.75).refreshBody();
     platforms.create(600, 500, 'block').setScale(1.20, 0.75).refreshBody();
