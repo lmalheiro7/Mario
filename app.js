@@ -25,19 +25,9 @@ let config = {
 
 let game = new Phaser.Game(config);
 let points=0;
-let castle;
 
 
-class Castle{
-    castleObject;
-    constructor() {
-        this.castleObject = {};
-    }
-    createCastle(parent, w, h, sprite, fnumber){
-        this.castleObject = parent.physics.add.sprite(w,h, sprite, fnumber).setScale(0.20, 0.20);
-    }
 
-}
 
 //CREATE ENEMY
 class Enemy{
@@ -143,8 +133,6 @@ function create() {
     })
 
 
-
-
     let ground = this.add.tileSprite(0, H - 48, W, 48, 'ground');
     ground.setOrigin(0, 0);
     this.physics.add.existing(ground, true);           // ground.body.allowGravity = false; // ground.body.immovable = true;
@@ -153,7 +141,7 @@ function create() {
     let cloud2 = this.add.sprite(850, 100, 'cloud').setScale(0.75,0.75)
     let plants = this.add.sprite(650, H - 70, "plants");
     let plant2 = this.add.sprite(150, H - 80, "plant2").setScale(0.75, 1);
-    let castle = this.add.sprite(1530, 530, "castle").setScale(0.20, 0.20);
+    let castle = this.add.sprite(1590, 590, "castle").setScale(0.10, 0.10);
     this.player = this.physics.add.sprite(40, 90, 'hero', 8)
     this.player.setBounce(0.3)
     this.player.setCollideWorldBounds(true);
@@ -191,11 +179,21 @@ function create() {
 
     let fruits = this.physics.add.group({
         key: "apple",
+        repeat: 40,
+        setScale: { x: 0.05, y: 0.05 },
+        setXY: { x: 200, y: 0, stepX: 100 },
+
+    })
+/*
+    let fruits = this.physics.add.group({
+        key: "apple",
         repeat: 8,
         setScale: { x: 0.05, y: 0.05 },
         setXY: { x: 200, y: 0, stepX: 100 },
 
     })
+
+ */
 
     fruits.children.iterate((f) => {
         f.setBounce(Phaser.Math.FloatBetween(0.4, 0.7))
@@ -258,18 +256,7 @@ function create() {
     platforms.create(1550, 250, 'block').setScale(1, 0.75).refreshBody();
 
 
-    /*//ULTIMO BLOCO DE CODIGO
-    platforms.create(1250, 550, 'block').setScale(1, 0.75).refreshBody();
-    platforms.create(1300, 550, 'block').setScale(1, 0.75).refreshBody();
-    platforms.create(1350, 550, 'block').setScale(1, 0.75).refreshBody();
-    platforms.create(1400, 550, 'block').setScale(1, 0.75).refreshBody();
-    platforms.create(1450, 550, 'block').setScale(1, 0.75).refreshBody();
-    platforms.create(1500, 550, 'block').setScale(1, 0.75).refreshBody();
-    platforms.create(1550, 550, 'block').setScale(1, 0.75).refreshBody();
-    platforms.create(1600, 550, 'block').setScale(1, 0.75).refreshBody();
-    platforms.create(1650, 550, 'block').setScale(1, 0.75).refreshBody();
 
-     */
 
 
 
@@ -289,6 +276,8 @@ function create() {
     //add enemy obstacle
     this.e1.addColider(this, platforms, blocks);
     this.e1.collideWithPlayer(this, this.player);
+    
+
 
 
 
@@ -331,8 +320,6 @@ function update() {
         this.player.setVelocityY(player_config.player_jumpspeed)
     }
 
-    this.player.setVelocityX()
-
     //add enemy obstacle
     this.e1.enemyObject.setVelocityX(50*this.e1.direction);
     this.e1.enemyObject.anims.play('run', true);
@@ -344,15 +331,19 @@ function update() {
     this.e3.enemyObject.anims.play('run', true);
 
 
+
 }
 
 function eatFruit(player, fruit) {
+    let texto;
     fruit.disableBody(true, true)
     points=points+10;
     scoreText.setText('score: '+ points);
-}
 
-function hitCastle(player, castle){
-    this.physics.pause();
-    player.active = false;
+    if (points == 150){
+        texto = this.add.text(1200, 350, 'CHEGUEI', { fontSize: '32px', fill: '#000' })
+        player.active = false;
+        player.disableBody(true, true);
+    }
+
 }

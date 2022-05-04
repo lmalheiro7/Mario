@@ -24,31 +24,10 @@ let config = {
 };
 
 let game = new Phaser.Game(config);
+let points=0;
 
 
-class Port{
-    objectPorta;
 
-    constructor() {
-        this.objectPorta = {};
-    }
-
-    createPort(parent, w, h, sprite){
-        this.objectPorta = parent.physics.add.sprite(w,h, sprite).setScale(1,1);
-    }
-
-    portWithColliderPlayer(parent, player){
-        parent.physics.add.collider(this.objectPorta, player, ()=>{
-            if(player.y + 40 > this.objectPorta.y){
-                player.active = false;
-                player.disableBody(true, true);
-            }else{
-                this.objectPorta.active = false;
-                this.objectPorta.disableBody(true, true)
-            }
-        })
-    }
-}
 
 //CREATE ENEMY
 class Enemy{
@@ -93,6 +72,7 @@ function preload() {
     this.load.image("plant2", "assets/plant2.png");
     this.load.image("gemBlock", "assets/gemBlock.png");
     this.load.image("block", "assets/block.png");
+    this.load.image("castle", "assets/castle.png");
     this.load.image("obs", "assets/obs.png");
     this.load.spritesheet('hero', 'assets/hero.png', {
         frameWidth: 57, frameHight: 90
@@ -100,15 +80,19 @@ function preload() {
     this.load.spritesheet('sprite', 'assets/inimigo.png', {
         frameWidth: 32, frameHight: 23
     });
-    this.load.spritesheet('porta', 'assets/porta.png', {
-        frameWidth: 32, frameHight: 23
+    this.load.spritesheet('port', 'assets/portafim.png', {
+        frameWidth: 70, frameHight: 140
+    });
+    this.load.spritesheet('castelo', 'assets/castle.png', {
+        frameWidth: 70, frameHight: 140
     });
 }
 
 function create() {
-    //W = game.config.width;
     W=1650;
     H = game.config.height;
+
+    scoreText = this.add.text(1400, 350, 'score: '+ points, { fontSize: '32px', fill: '#000' });
 
 
     /*
@@ -148,19 +132,6 @@ function create() {
         frameRate: 10
     })
 
-    this.p1 = new Port();
-    this.p1.createPort(this, 1500, 0, 'porta');
-    this.anims.create({
-        key: 'run',
-        frames: this.anims.generateFrameNumbers('sprite', {
-            start:0, end:1
-        }),
-        repate: -1,
-        frameRate: 10
-    })
-
-
-
 
     let ground = this.add.tileSprite(0, H - 48, W, 48, 'ground');
     ground.setOrigin(0, 0);
@@ -170,12 +141,10 @@ function create() {
     let cloud2 = this.add.sprite(850, 100, 'cloud').setScale(0.75,0.75)
     let plants = this.add.sprite(650, H - 70, "plants");
     let plant2 = this.add.sprite(150, H - 80, "plant2").setScale(0.75, 1);
+    let castle = this.add.sprite(1590, 590, "castle").setScale(0.10, 0.10);
     this.player = this.physics.add.sprite(40, 90, 'hero', 8)
     this.player.setBounce(0.3)
     this.player.setCollideWorldBounds(true);
-
-
-
     //Player animation and Player movement
 
     //animation
@@ -210,11 +179,21 @@ function create() {
 
     let fruits = this.physics.add.group({
         key: "apple",
-        repeat: 8,
+        repeat: 40,
         setScale: { x: 0.05, y: 0.05 },
         setXY: { x: 200, y: 0, stepX: 100 },
 
     })
+    /*
+        let fruits = this.physics.add.group({
+            key: "apple",
+            repeat: 8,
+            setScale: { x: 0.05, y: 0.05 },
+            setXY: { x: 200, y: 0, stepX: 100 },
+
+        })
+
+     */
 
     fruits.children.iterate((f) => {
         f.setBounce(Phaser.Math.FloatBetween(0.4, 0.7))
@@ -231,7 +210,18 @@ function create() {
     blocks.create(1500, 220, "obs").setScale(0.20, 0.30).refreshBody();
 
 
+
+
+    //plataformas criadas para teste de porta do fim
+    //blocks.create(1300, 520, "obs").setScale(0.20, 0.30).refreshBody();
+    //blocks.create(1600, 520, "obs").setScale(0.20, 0.30).refreshBody();
+    // blocks.create(1400, H-60, 'block').setScale(1, 0.75).refreshBody();
+    //blocks.create(1655, H-60, 'block').setScale(1, 0.75).refreshBody();
+    //fim de teste
+
+
     let platforms = this.physics.add.staticGroup();
+
 
     platforms.create(550, 500, 'block').setScale(1, 0.75).refreshBody();
     platforms.create(600, 500, 'block').setScale(1.20, 0.75).refreshBody();
@@ -265,6 +255,13 @@ function create() {
     platforms.create(1500, 250, 'block').setScale(1, 0.75).refreshBody();
     platforms.create(1550, 250, 'block').setScale(1, 0.75).refreshBody();
 
+
+
+
+
+
+
+
     // platforms.create(1550, H-60, 'porta').setScale(1,1).refreshBody();
 
     platforms.add(ground);
@@ -280,13 +277,17 @@ function create() {
     this.e1.addColider(this, platforms, blocks);
     this.e1.collideWithPlayer(this, this.player);
 
+
+
+
+
     this.e2.addColider(this, platforms, blocks);
     this.e2.collideWithPlayer(this, this.player);
 
     this.e3.addColider(this, platforms, blocks);
     this.e3.collideWithPlayer(this, this.player);
 
-    this.p1.portWithColliderPlayer(this, this.player);
+
 
 
     this.cameras.main.setBounds(0, 0, W, H);
@@ -318,6 +319,7 @@ function update() {
     if (this.cursors.up.isDown && this.player.body.touching.down) {
         this.player.setVelocityY(player_config.player_jumpspeed)
     }
+
     //add enemy obstacle
     this.e1.enemyObject.setVelocityX(50*this.e1.direction);
     this.e1.enemyObject.anims.play('run', true);
@@ -333,5 +335,15 @@ function update() {
 }
 
 function eatFruit(player, fruit) {
+    let texto;
     fruit.disableBody(true, true)
+    points=points+10;
+    scoreText.setText('score: '+ points);
+
+    if (points == 150){
+        texto = this.add.text(1200, 350, 'CHEGUEI', { fontSize: '32px', fill: '#000' })
+        player.active = false;
+        player.disableBody(true, true);
+    }
+
 }
