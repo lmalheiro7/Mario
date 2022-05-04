@@ -25,11 +25,19 @@ let config = {
 
 let game = new Phaser.Game(config);
 let points=0;
+let castle;
 
 
+class Castle{
+    castleObject;
+    constructor() {
+        this.castleObject = {};
+    }
+    createCastle(parent, w, h, sprite, fnumber){
+        this.castleObject = parent.physics.add.sprite(w,h, sprite, fnumber).setScale(0.20, 0.20);
+    }
 
-
-
+}
 
 //CREATE ENEMY
 class Enemy{
@@ -74,6 +82,7 @@ function preload() {
     this.load.image("plant2", "assets/plant2.png");
     this.load.image("gemBlock", "assets/gemBlock.png");
     this.load.image("block", "assets/block.png");
+    this.load.image("castle", "assets/castle.png");
     this.load.image("obs", "assets/obs.png");
     this.load.spritesheet('hero', 'assets/hero.png', {
         frameWidth: 57, frameHight: 90
@@ -84,6 +93,9 @@ function preload() {
     this.load.spritesheet('port', 'assets/portafim.png', {
         frameWidth: 70, frameHight: 140
     });
+    this.load.spritesheet('castelo', 'assets/castle.png', {
+        frameWidth: 70, frameHight: 140
+    });
 }
 
 function create() {
@@ -91,6 +103,7 @@ function create() {
     H = game.config.height;
 
     scoreText = this.add.text(1400, 350, 'score: '+ points, { fontSize: '32px', fill: '#000' });
+
 
     /*
     create function
@@ -131,6 +144,7 @@ function create() {
 
 
 
+
     let ground = this.add.tileSprite(0, H - 48, W, 48, 'ground');
     ground.setOrigin(0, 0);
     this.physics.add.existing(ground, true);           // ground.body.allowGravity = false; // ground.body.immovable = true;
@@ -139,15 +153,10 @@ function create() {
     let cloud2 = this.add.sprite(850, 100, 'cloud').setScale(0.75,0.75)
     let plants = this.add.sprite(650, H - 70, "plants");
     let plant2 = this.add.sprite(150, H - 80, "plant2").setScale(0.75, 1);
-
-    let castle = this.add.sprite(300, H - 60, "cloud")
+    let castle = this.add.sprite(1530, 530, "castle").setScale(0.20, 0.20);
     this.player = this.physics.add.sprite(40, 90, 'hero', 8)
     this.player.setBounce(0.3)
     this.player.setCollideWorldBounds(true);
-
-
-
-
     //Player animation and Player movement
 
     //animation
@@ -204,6 +213,7 @@ function create() {
 
 
 
+
     //plataformas criadas para teste de porta do fim
                      //blocks.create(1300, 520, "obs").setScale(0.20, 0.30).refreshBody();
                        //blocks.create(1600, 520, "obs").setScale(0.20, 0.30).refreshBody();
@@ -213,7 +223,6 @@ function create() {
 
 
     let platforms = this.physics.add.staticGroup();
-
 
 
     platforms.create(550, 500, 'block').setScale(1, 0.75).refreshBody();
@@ -282,6 +291,7 @@ function create() {
     this.e1.collideWithPlayer(this, this.player);
 
 
+
     this.e2.addColider(this, platforms, blocks);
     this.e2.collideWithPlayer(this, this.player);
 
@@ -320,6 +330,9 @@ function update() {
     if (this.cursors.up.isDown && this.player.body.touching.down) {
         this.player.setVelocityY(player_config.player_jumpspeed)
     }
+
+    this.player.setVelocityX()
+
     //add enemy obstacle
     this.e1.enemyObject.setVelocityX(50*this.e1.direction);
     this.e1.enemyObject.anims.play('run', true);
@@ -337,4 +350,9 @@ function eatFruit(player, fruit) {
     fruit.disableBody(true, true)
     points=points+10;
     scoreText.setText('score: '+ points);
+}
+
+function hitCastle(player, castle){
+    this.physics.pause();
+    player.active = false;
 }
