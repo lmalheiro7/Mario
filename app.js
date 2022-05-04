@@ -27,30 +27,10 @@ let game = new Phaser.Game(config);
 let points=0;
 
 
-class PortaFim{
-    porta;
 
-    constructor() {
-        this.porta = {};
-    }
 
-    criarPorta(parent, largura, comprimento, sprite, fnumber){
-        this.porta = parent.physics.add.sprite(largura, comprimento, sprite, fnumber).setScale(1,1);
-    }
 
-    collidePortWidhPlayer(parent, player, points){
-        parent.physics.add.collider(this.porta, player, ()=>{
-            if (player.y + 40 > this.porta.y && points >= 90){
-                player.active = false;
-                player.disableBody(true, true);
-            }else{
-                this.porta.active(true);
-                this.porta.disableBody(false, false);
-            }
-        })
-    }
 
-}
 //CREATE ENEMY
 class Enemy{
     direction;
@@ -101,17 +81,16 @@ function preload() {
     this.load.spritesheet('sprite', 'assets/inimigo.png', {
         frameWidth: 32, frameHight: 23
     });
-    this.load.spritesheet('port', 'assets/port.png', {
+    this.load.spritesheet('port', 'assets/portafim.png', {
         frameWidth: 70, frameHight: 140
     });
 }
 
 function create() {
-    //W = game.config.width;
     W=1650;
     H = game.config.height;
 
-    scoreText = this.add.text(1400, 450, 'score: '+ points, { fontSize: '32px', fill: '#000' });
+    scoreText = this.add.text(1400, 350, 'score: '+ points, { fontSize: '32px', fill: '#000' });
 
     /*
     create function
@@ -150,20 +129,6 @@ function create() {
         frameRate: 10
     })
 
-    //
-    //test
-    //
-
-    this.p1 = new PortaFim();
-    this.p1.criarPorta(this, 250, 100, 'port', 0);
-    this.anims.create({
-        key: 'run',
-        frames: this.anims.generateFrameNumbers('port', {
-            start:0, end:1
-        }),
-        repate: -1,
-        frameRate: 10
-    })
 
 
     let ground = this.add.tileSprite(0, H - 48, W, 48, 'ground');
@@ -174,9 +139,12 @@ function create() {
     let cloud2 = this.add.sprite(850, 100, 'cloud').setScale(0.75,0.75)
     let plants = this.add.sprite(650, H - 70, "plants");
     let plant2 = this.add.sprite(150, H - 80, "plant2").setScale(0.75, 1);
+
+    let castle = this.add.sprite(300, H - 60, "cloud")
     this.player = this.physics.add.sprite(40, 90, 'hero', 8)
     this.player.setBounce(0.3)
     this.player.setCollideWorldBounds(true);
+
 
 
 
@@ -235,15 +203,18 @@ function create() {
     blocks.create(1500, 220, "obs").setScale(0.20, 0.30).refreshBody();
 
 
+
+    //plataformas criadas para teste de porta do fim
+                     //blocks.create(1300, 520, "obs").setScale(0.20, 0.30).refreshBody();
+                       //blocks.create(1600, 520, "obs").setScale(0.20, 0.30).refreshBody();
+   // blocks.create(1400, H-60, 'block').setScale(1, 0.75).refreshBody();
+    //blocks.create(1655, H-60, 'block').setScale(1, 0.75).refreshBody();
+    //fim de teste
+
+
     let platforms = this.physics.add.staticGroup();
 
 
-    //TESTE PORTA
-    platforms.create(200, 600, 'block').setScale(1, 0.75).refreshBody();
-    platforms.create(250, 600, 'block').setScale(1, 0.75).refreshBody();
-    platforms.create(300, 600, 'block').setScale(1, 0.75).refreshBody();
-    platforms.create(350, 600, 'block').setScale(1, 0.75).refreshBody();
-    //
 
     platforms.create(550, 500, 'block').setScale(1, 0.75).refreshBody();
     platforms.create(600, 500, 'block').setScale(1.20, 0.75).refreshBody();
@@ -278,6 +249,23 @@ function create() {
     platforms.create(1550, 250, 'block').setScale(1, 0.75).refreshBody();
 
 
+    /*//ULTIMO BLOCO DE CODIGO
+    platforms.create(1250, 550, 'block').setScale(1, 0.75).refreshBody();
+    platforms.create(1300, 550, 'block').setScale(1, 0.75).refreshBody();
+    platforms.create(1350, 550, 'block').setScale(1, 0.75).refreshBody();
+    platforms.create(1400, 550, 'block').setScale(1, 0.75).refreshBody();
+    platforms.create(1450, 550, 'block').setScale(1, 0.75).refreshBody();
+    platforms.create(1500, 550, 'block').setScale(1, 0.75).refreshBody();
+    platforms.create(1550, 550, 'block').setScale(1, 0.75).refreshBody();
+    platforms.create(1600, 550, 'block').setScale(1, 0.75).refreshBody();
+    platforms.create(1650, 550, 'block').setScale(1, 0.75).refreshBody();
+
+     */
+
+
+
+
+
    // platforms.create(1550, H-60, 'porta').setScale(1,1).refreshBody();
 
     platforms.add(ground);
@@ -299,6 +287,7 @@ function create() {
 
     this.e3.addColider(this, platforms, blocks);
     this.e3.collideWithPlayer(this, this.player);
+
 
 
 
@@ -340,7 +329,6 @@ function update() {
 
     this.e3.enemyObject.setVelocityX(50*this.e3.direction);
     this.e3.enemyObject.anims.play('run', true);
-
 
 
 }
